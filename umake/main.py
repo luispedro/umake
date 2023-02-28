@@ -10,8 +10,15 @@ def convert_with_inkscape(target, src):
             ,'--export-dpi=300'
             ,src])
 
+def convert_with_pandoc(target, src):
+    subprocess.check_call(
+            ['pandoc',
+            src,
+            '-o', target])
+
 converters = {
     ('.png', '.svg') : convert_with_inkscape,
+    ('.docx', '.md') : convert_with_pandoc,
 }
 
 def main(args=None):
