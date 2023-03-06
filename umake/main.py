@@ -1,24 +1,10 @@
-import subprocess
 import sys
 import pathlib
-
-
-def convert_with_inkscape(target, src):
-    subprocess.check_call(
-            ['inkscape'
-            , '--export-filename', target
-            ,'--export-dpi=300'
-            ,src])
-
-def convert_with_pandoc(target, src):
-    subprocess.check_call(
-            ['pandoc',
-            src,
-            '-o', target])
+from umake import converters
 
 converters = {
-    ('.png', '.svg') : convert_with_inkscape,
-    ('.docx', '.md') : convert_with_pandoc,
+    ('.png', '.svg') : converters.InkscapeConverter(),
+    ('.docx', '.md') : converters.PandocConverter(),
 }
 
 def main(args=None):
