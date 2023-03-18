@@ -3,6 +3,7 @@ import pathlib
 from umake import converters
 
 converters = {
+    ('.pdf', '.svg') : converters.InkscapeConverter(),
     ('.png', '.svg') : converters.InkscapeConverter(),
     ('.docx', '.md') : converters.PandocConverter(),
 }
