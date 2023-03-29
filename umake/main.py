@@ -2,11 +2,13 @@ import sys
 import pathlib
 from umake import converters
 
-converters = {
+registry = {
     ('.pdf', '.svg') : converters.InkscapeConverter(),
     ('.png', '.svg') : converters.InkscapeConverter(),
     ('.docx', '.md') : converters.PandocConverter(),
 }
+
+converters.XelateXConverter.register(registry)
 
 def main(args=None):
     if args is None:
@@ -18,7 +20,7 @@ def main(args=None):
     candidates = []
     for c in target.absolute().parent.glob(f'{target.stem}.*'):
         if c.suffix != target.suffix:
-            if (target.suffix, c.suffix) in converters:
+            if (target.suffix, c.suffix) in registry:
                 candidates.append(c)
     if len(candidates) == 0:
         sys.stderr.write(f'No candidates found for {target}\n')
@@ -36,7 +38,7 @@ def main(args=None):
         print(f'File {target} already exists. Overwrite?')
         if input() not in ['y', 'Y']:
             return 0
-    converters[(target.suffix, c.suffix)](target, c)
+    registry[(target.suffix, c.suffix)](target, c)
 
 if __name__ == '__main__':
     sys.exit(main())

@@ -28,3 +28,12 @@ class PandocConverter(SubprocessConverter):
         return ['pandoc',
                 src,
                 '-o', target]
+
+class XelateXConverter(SubprocessConverter):
+
+    @classmethod
+    def register(cls, converters):
+        converters['.pdf', '.tex'] = cls()
+
+    def build_command(self, target, src):
+        return ['xelatex', src]
