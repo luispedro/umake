@@ -7,6 +7,11 @@ class SubprocessConverter(Converter):
     def __init__(self, **kwargs):
         self.quiet = kwargs.get('quiet', False)
 
+    @classmethod
+    def register(cls, registry):
+        for k in cls._conversions:
+            registry[k] = cls()
+
     def build_command(self, target, src):
         raise NotImplementedError
 
@@ -17,6 +22,10 @@ class SubprocessConverter(Converter):
         subprocess.check_call(command)
 
 class InkscapeConverter(SubprocessConverter):
+    _conversions = [
+                ('.pdf', '.svg'),
+                ('.png', '.svg'),
+                ]
     def build_command(self, target, src):
         return ['inkscape'
                 , '--export-filename', target
@@ -24,16 +33,14 @@ class InkscapeConverter(SubprocessConverter):
                 ,src]
 
 class PandocConverter(SubprocessConverter):
+    _conversions = [('.docx', '.md')]
     def build_command(self, target, src):
         return ['pandoc',
                 src,
                 '-o', target]
 
 class XelateXConverter(SubprocessConverter):
-
-    @classmethod
-    def register(cls, converters):
-        converters['.pdf', '.tex'] = cls()
+    _conversions = [('.pdf', '.tex')]
 
     def build_command(self, target, src):
         return ['xelatex', src]

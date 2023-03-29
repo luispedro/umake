@@ -1,14 +1,13 @@
 import sys
 import pathlib
-from umake import converters
+from umake import converters as cs
 
-registry = {
-    ('.pdf', '.svg') : converters.InkscapeConverter(),
-    ('.png', '.svg') : converters.InkscapeConverter(),
-    ('.docx', '.md') : converters.PandocConverter(),
-}
+registry = {}
+for c in [cs.XelateXConverter,
+         cs.InkscapeConverter,
+         cs.PandocConverter]:
+    c.register(registry)
 
-converters.XelateXConverter.register(registry)
 
 def main(args=None):
     if args is None:
