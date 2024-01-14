@@ -44,3 +44,16 @@ class XelateXConverter(SubprocessConverter):
 
     def build_command(self, target, src):
         return ['xelatex', src]
+
+class LibreOfficeConverter(SubprocessConverter):
+    _conversions = [('.pdf', '.docx'),
+                    ('.pdf', '.doc'),
+                    ('.pdf', '.odt'),
+                    ('.pdf', '.rtf'),
+                   ]
+    def build_command(self, target, src):
+        return ['libreoffice',
+                '--headless',
+                '--convert-to', 'pdf',
+                src]
+

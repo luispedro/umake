@@ -5,7 +5,8 @@ from umake import converters as cs
 registry = {}
 for c in [cs.XelateXConverter,
          cs.InkscapeConverter,
-         cs.PandocConverter]:
+         cs.PandocConverter,
+         cs.LibreOfficeConverter]:
     c.register(registry)
 
 
