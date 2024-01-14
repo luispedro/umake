@@ -9,11 +9,24 @@ for c in [cs.XelateXConverter,
          cs.LibreOfficeConverter]:
     c.register(registry)
 
+def parse_args(args):
+    '''Parse command line arguments
+    Valid examples:
+
+    umake file.pdf
+    umake --force file.pdf
+
+    '''
+    import argparse
+    parser = argparse.ArgumentParser(description='Convert files')
+    parser.add_argument('target', type=pathlib.Path, help='Target file to generate')
+    parser.add_argument('--force', action='store_true', help='Execute even if target file exists')
+    return parser.parse_args(args)
+
 
 def main(args=None):
-    if args is None:
-        args = sys.argv
-    target = pathlib.Path(args[1])
+    args = parse_args(sys.argv[1:] if args is None else args)
+    target = args.target
     if len(target.suffixes) != 1:
         raise IOError(f'Cannot parse {target}')
     ext1 = target.suffix
@@ -36,9 +49,13 @@ def main(args=None):
         [c] = candidates
     if target.exists():
         is_newer = target.stat().st_mtime > c.stat().st_mtime
-        print(f'File {target} already exists ({"and is newer" if is_newer else "but is older"}). Overwrite?')
-        if input() not in ['y', 'Y']:
-            return 0
+        print(f'File {target} already exists ({"and is newer" if is_newer else "but is older"})', end=' ')
+        if not args.force:
+            print('Do you want to overwrite it? [y/N]')
+            if input() not in ['y', 'Y']:
+                return 0
+        else:
+            print('Overwriting')
     registry[(target.suffix, c.suffix)](target, c)
 
 if __name__ == '__main__':
