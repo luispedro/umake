@@ -35,7 +35,8 @@ def main(args=None):
     else:
         [c] = candidates
     if target.exists():
-        print(f'File {target} already exists. Overwrite?')
+        is_newer = target.stat().st_mtime > c.stat().st_mtime
+        print(f'File {target} already exists ({"and is newer" if is_newer else "but is older"}). Overwrite?')
         if input() not in ['y', 'Y']:
             return 0
     registry[(target.suffix, c.suffix)](target, c)
