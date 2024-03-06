@@ -1,0 +1,24 @@
+[project]
+name = "umake"
+dynamic = ["version"]
+description = "Universal make"
+authors = [{name = "Luis Pedro Coelho", email = "luis@luispedro.org"}]
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.7"
+dependencies = []
+
+[project.entry-points."console_scripts"]
+umake = "umake.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "umake.umake_version.__version__"}
+
