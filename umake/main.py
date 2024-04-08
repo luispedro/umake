@@ -2,13 +2,6 @@ import sys
 import pathlib
 from umake import converters as cs
 
-registry = {}
-for c in [cs.XelateXConverter,
-         cs.InkscapeConverter,
-         cs.PandocConverter,
-         cs.LibreOfficeConverter]:
-    c.register(registry)
-
 def parse_args(args):
     '''Parse command line arguments
     Valid examples:
@@ -33,7 +26,7 @@ def main(args=None):
     candidates = []
     for c in target.absolute().parent.glob(f'{target.stem}.*'):
         if c.suffix != target.suffix:
-            if (target.suffix, c.suffix) in registry:
+            if (target.suffix, c.suffix) in cs.registry:
                 candidates.append(c)
     if len(candidates) == 0:
         sys.stderr.write(f'No candidates found for {target}\n')
@@ -56,7 +49,7 @@ def main(args=None):
                 return 0
         else:
             print('Overwriting')
-    registry[(target.suffix, c.suffix)](target, c)
+    cs.registry[(target.suffix, c.suffix)](target, c)
 
 if __name__ == '__main__':
     sys.exit(main())

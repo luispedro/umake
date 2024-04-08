@@ -1,5 +1,11 @@
 import subprocess
 
+registry = {}
+
+def register_converter(cls):
+    cls.register(registry)
+
+
 class Converter:
     pass
 
@@ -21,6 +27,7 @@ class SubprocessConverter(Converter):
             print(' '.join(map(str,command)))
         subprocess.check_call(command)
 
+@register_converter
 class InkscapeConverter(SubprocessConverter):
     _conversions = [
                 ('.pdf', '.svg'),
@@ -32,6 +39,7 @@ class InkscapeConverter(SubprocessConverter):
                 ,'--export-dpi=300'
                 ,src]
 
+@register_converter
 class PandocConverter(SubprocessConverter):
     _conversions = [('.docx', '.md')]
     def build_command(self, target, src):
@@ -39,12 +47,14 @@ class PandocConverter(SubprocessConverter):
                 src,
                 '-o', target]
 
+@register_converter
 class XelateXConverter(SubprocessConverter):
     _conversions = [('.pdf', '.tex')]
 
     def build_command(self, target, src):
         return ['xelatex', src]
 
+@register_converter
 class LibreOfficeConverter(SubprocessConverter):
     _conversions = [('.pdf', '.docx'),
                     ('.pdf', '.doc'),
