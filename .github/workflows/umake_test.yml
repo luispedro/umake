@@ -35,4 +35,5 @@ jobs:
       shell: bash -l {0}
       run: |
         python -m pytest umake/tests/
+        umake --supports docx pdf
 

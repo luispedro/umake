@@ -12,13 +12,26 @@ def parse_args(args):
     '''
     import argparse
     parser = argparse.ArgumentParser(description='Convert files')
-    parser.add_argument('target', type=pathlib.Path, help='Target file to generate')
+    parser.add_argument('target', type=pathlib.Path, help='Target file to generate', nargs='?')
     parser.add_argument('--force', action='store_true', help='Execute even if target file exists')
+    parser.add_argument('--supports',
+                        action='store',
+                        nargs=2,
+                        help='Check if conversion is supported',
+                        metavar=('ext1', 'ext2'))
     return parser.parse_args(args)
 
 
 def main(args=None):
     args = parse_args(sys.argv[1:] if args is None else args)
+    if args.supports:
+        ext1, ext2 = args.supports
+        if (f'.{ext2}', f'.{ext1}') in cs.registry:
+            print(f'Conversion from {ext1} to {ext2} is supported')
+            return 0
+        else:
+            print(f'Conversion from {ext1} to {ext2} is not supported')
+            return 1
     target = args.target
     if len(target.suffixes) != 1:
         raise IOError(f'Cannot parse {target}')
