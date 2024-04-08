@@ -67,3 +67,13 @@ class LibreOfficeConverter(SubprocessConverter):
                 '--convert-to', 'pdf',
                 src]
 
+
+@register_converter
+class HeifConverter(SubprocessConverter):
+    _conversions = [('.jpeg', '.heic'),
+                    ('.jpg',  '.heic'),
+                    ('.png',  '.heic'),
+                   ]
+    def build_command(self, target, src):
+        return ['heif-convert', src, target]
+
