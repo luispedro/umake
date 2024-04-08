@@ -17,7 +17,7 @@ requires-python = ">=3.7"
 dependencies = []
 
 [project.entry-points."console_scripts"]
-umake = "umake.cli:main"
+umake = "umake.main:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "umake.umake_version.__version__"}
