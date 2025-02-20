@@ -37,8 +37,8 @@ def main(args=None):
         raise IOError(f'Cannot parse {target}')
     ext1 = target.suffix
     candidates = []
-    for c in target.absolute().parent.glob(f'{target.stem}.*'):
-        if c.suffix != target.suffix:
+    for c in target.absolute().parent.iterdir():
+        if c.stem == target.stem and c.suffix != target.suffix:
             if (target.suffix, c.suffix) in cs.registry:
                 candidates.append(c)
     if len(candidates) == 0:
