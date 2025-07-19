@@ -54,17 +54,27 @@ class XelateXConverter(SubprocessConverter):
     def build_command(self, target, src):
         return ['xelatex', src]
 
+
 @register_converter
 class LibreOfficeConverter(SubprocessConverter):
     _conversions = [('.pdf', '.docx'),
                     ('.pdf', '.doc'),
                     ('.pdf', '.odt'),
                     ('.pdf', '.rtf'),
+                    ('.csv', '.xlsx'),
+                    ('.csv', '.xls'),
+                    ('.csv', '.ods'),
                    ]
     def build_command(self, target, src):
+        if target.endswith('.pdf'):
+            target = 'pdf'
+        elif target.endswith('.csv'):
+            target = 'csv'
+        else:
+            raise NotImplementedError(f'LibreOfficeConverter: Conversion to {target} not implemented')
         return ['libreoffice',
                 '--headless',
-                '--convert-to', 'pdf',
+                '--convert-to', target,
                 src]
 
 
