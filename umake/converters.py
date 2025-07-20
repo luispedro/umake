@@ -41,11 +41,20 @@ class InkscapeConverter(SubprocessConverter):
 
 @register_converter
 class PandocConverter(SubprocessConverter):
-    _conversions = [('.docx', '.md')]
+    _conversions = [
+        ('.docx', '.md'),
+        ('.pdf', '.md'),
+        ('.html', '.md'),
+        ('.md', '.docx'),
+    ]
+
     def build_command(self, target, src):
-        return ['pandoc',
-                src,
-                '-o', target]
+        return [
+            'pandoc',
+            src,
+            '-o',
+            target,
+        ]
 
 @register_converter
 class XelateXConverter(SubprocessConverter):
@@ -86,4 +95,15 @@ class HeifConverter(SubprocessConverter):
                    ]
     def build_command(self, target, src):
         return ['heif-convert', src, target]
+
+
+@register_converter
+class ImageMagickConverter(SubprocessConverter):
+    _conversions = [
+        ('.jpg', '.png'),
+        ('.png', '.jpg'),
+    ]
+
+    def build_command(self, target, src):
+        return ['convert', src, target]
 
