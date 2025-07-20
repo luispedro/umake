@@ -13,8 +13,10 @@ This will call `libreoffice` on the command line to convert the file to `pdf`.
 
 Currently supported transformations:
 
-- `SVG` to `PNG`/`SVG`: `umake file.pdf` (uses [inkscape](https://inkscape.org/) on the command line)
-- `DOCX`/`DOC`/`ODT` to `PDF`: `umake file.pdf` (uses libreoffice on the command line)
-- `MD` to `DOCX`: `umake file.docx` (uses [pandoc](https://pandoc.org/) on the command line)
+- `SVG` to `PNG`/`PDF`: `umake file.png` or `umake file.pdf` (uses [inkscape](https://inkscape.org/) on the command line)
+- `DOCX`/`DOC`/`ODT` to `PDF`: `umake file.pdf` (uses `libreoffice` on the command line)
+- `MD` to `DOCX`/`PDF`/`HTML`: `umake file.docx`, `umake file.pdf`, or `umake file.html` (uses [pandoc](https://pandoc.org/) on the command line)
+- `DOCX` to `MD`: `umake file.md` (uses `pandoc` on the command line)
+- `PNG` to `JPG` and `JPG` to `PNG`: `umake file.jpg` or `umake file.png` (uses `convert` from ImageMagick)
 
 
