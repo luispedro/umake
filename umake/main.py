@@ -44,7 +44,10 @@ def main(args=None):
             print(f'Conversion from {ext1} to {ext2} is not supported')
             return 1
     target = args.target
-    if len(target.suffixes) != 1:
+    if not target.suffix:
+        sys.stderr.write(f'Target {target} has no suffix, cannot determine what to convert to\n')
+        return 1
+    if len(target.suffixes) > 1:
         warnings.warn(f'File {target} has multiple suffixes {target.suffixes}, only the last one will be considered')
     ext1 = target.suffix
     candidates = []
@@ -59,8 +62,16 @@ def main(args=None):
         print(f'Multiple candidates found for {target}:')
         for i,c in enumerate(candidates):
             print(f'[{i}] {c}')
-        print('Which one do you want to convert?')
-        i = int(input())
+        while True:
+            print('Which one do you want to convert?')
+            try:
+                i = int(input())
+            except ValueError:
+                print('Please enter a number')
+                continue
+            if 0 <= i < len(candidates):
+                break
+            print(f'Please enter a number between 0 and {len(candidates)-1}')
         c = candidates[i]
     else:
         [c] = candidates

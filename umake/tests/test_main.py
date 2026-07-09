@@ -19,6 +19,28 @@ def test_supports_without_target():
     assert args.supports == ['docx', 'pdf']
 
 
+def test_no_suffix(capsys):
+    assert main(['Makefile']) == 1
+    assert 'no suffix' in capsys.readouterr().err
+
+
+def test_candidate_selection_rejects_bad_input(tmp_path, monkeypatch):
+    from umake import converters as cs
+    (tmp_path / 'doc.md').write_text('')
+    (tmp_path / 'doc.docx').write_text('')
+    converted = []
+    class FakeConverter:
+        def __call__(self, target, src):
+            converted.append(src)
+    monkeypatch.setitem(cs.registry, ('.pdf', '.md'), FakeConverter())
+    monkeypatch.setitem(cs.registry, ('.pdf', '.docx'), FakeConverter())
+    answers = iter(['not a number', '7', '-1', '0'])
+    monkeypatch.setattr('builtins.input', lambda: next(answers))
+    monkeypatch.chdir(tmp_path)
+    main(['doc.pdf'])
+    assert len(converted) == 1
+
+
 def test_list(capsys):
     assert main(['--list']) == 0
     out = capsys.readouterr().out
