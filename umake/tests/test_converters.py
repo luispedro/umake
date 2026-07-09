@@ -15,6 +15,11 @@ def test_has_conversions():
     assert ('.docx', '.pdf') not in cs.registry
 
 
+def test_register_converter_returns_class():
+    assert isinstance(cs.registry[('.pdf', '.svg')], cs.InkscapeConverter)
+    assert isinstance(cs.registry[('.pdf', '.docx')], cs.LibreOfficeConverter)
+
+
 def test_build_command_output_directory():
     cmd = cs.registry[('.pdf', '.docx')].build_command('/some/dir/report.pdf', '/some/dir/report.docx')
     assert cmd[cmd.index('--outdir') + 1] == '/some/dir'

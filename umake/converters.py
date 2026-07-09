@@ -13,6 +13,7 @@ def _rename_output(target, src):
 
 def register_converter(cls):
     cls.register(registry)
+    return cls
 
 
 class Converter:
