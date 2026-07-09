@@ -22,4 +22,6 @@ Currently supported transformations:
 - `HEIC` to `JPEG`/`JPG`/`PNG`: `umake file.jpeg` or `umake file.png` (uses `heif-convert` on the command line)
 - `PNG` to `JPG` and `JPG` to `PNG`: `umake file.jpg` or `umake file.png` (uses `convert` from ImageMagick)
 
+Run `umake --list` to print all conversions supported by your installed version.
+
 

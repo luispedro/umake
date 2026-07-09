@@ -21,14 +21,20 @@ def parse_args(args):
                         nargs=2,
                         help='Check if conversion is supported',
                         metavar=('ext1', 'ext2'))
+    parser.add_argument('--list', action='store_true', help='List all supported conversions')
     args = parser.parse_args(args)
-    if args.target is None and args.supports is None:
-        parser.error('a target file is required (unless --supports is used)')
+    if args.target is None and args.supports is None and not args.list:
+        parser.error('a target file is required (unless --supports or --list is used)')
     return args
 
 
 def main(args=None):
     args = parse_args(sys.argv[1:] if args is None else args)
+    if args.list:
+        print('Supported conversions:')
+        for target, src in sorted(cs.registry, key=lambda k: (k[1], k[0])):
+            print(f'  {src[1:]} -> {target[1:]}')
+        return 0
     if args.supports:
         ext1, ext2 = args.supports
         if (f'.{ext2}', f'.{ext1}') in cs.registry:
