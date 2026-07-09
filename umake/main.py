@@ -1,5 +1,6 @@
 import sys
 import pathlib
+import subprocess
 from umake import converters as cs
 import warnings
 
@@ -84,7 +85,15 @@ def main(args=None):
                 return 0
         else:
             print('Overwriting')
-    cs.registry[(target.suffix, c.suffix)](target, c)
+    try:
+        cs.registry[(target.suffix, c.suffix)](target, c)
+    except FileNotFoundError as e:
+        sys.stderr.write(f'{e.filename}: not found — is it installed?\n')
+        return 1
+    except subprocess.CalledProcessError as e:
+        sys.stderr.write(f'Conversion failed: `{" ".join(map(str, e.cmd))}` exited with status {e.returncode}\n')
+        return 1
+    return 0
 
 if __name__ == '__main__':
     sys.exit(main())

@@ -41,6 +41,33 @@ def test_candidate_selection_rejects_bad_input(tmp_path, monkeypatch):
     assert len(converted) == 1
 
 
+def _install_fake_pdf_converter(tmp_path, monkeypatch, command):
+    from umake import converters as cs
+    (tmp_path / 'doc.md').write_text('')
+    class FakeTool(cs.SubprocessConverter):
+        def build_command(self, target, src):
+            return command
+    monkeypatch.setitem(cs.registry, ('.pdf', '.md'), FakeTool())
+    monkeypatch.chdir(tmp_path)
+
+
+def test_converter_success_returns_zero(tmp_path, monkeypatch):
+    _install_fake_pdf_converter(tmp_path, monkeypatch, ['true'])
+    assert main(['doc.pdf']) == 0
+
+
+def test_converter_not_installed(tmp_path, monkeypatch, capsys):
+    _install_fake_pdf_converter(tmp_path, monkeypatch, ['this-command-does-not-exist'])
+    assert main(['doc.pdf']) == 1
+    assert 'this-command-does-not-exist: not found' in capsys.readouterr().err
+
+
+def test_converter_error(tmp_path, monkeypatch, capsys):
+    _install_fake_pdf_converter(tmp_path, monkeypatch, ['false'])
+    assert main(['doc.pdf']) == 1
+    assert 'exited with status 1' in capsys.readouterr().err
+
+
 def test_list(capsys):
     assert main(['--list']) == 0
     out = capsys.readouterr().out
