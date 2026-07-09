@@ -32,4 +32,4 @@ To add a new conversion: add a `(target_suffix, source_suffix)` pair to an exist
 
 - Commit messages use short type prefixes: `ENH`, `MIN`, `BF`, etc.
 - Version lives in `umake/umake_version.py` (read dynamically by `pyproject.toml`).
-- No runtime Python dependencies; keep it that way (CI tests back to Python 3.7).
+- No runtime Python dependencies; keep it that way (CI tests back to Python 3.10).
