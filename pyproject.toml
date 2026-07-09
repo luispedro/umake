@@ -2,10 +2,11 @@
 name = "umake"
 dynamic = ["version"]
 description = "Universal make"
+readme = "README.md"
+license = "MIT"
 authors = [{name = "Luis Pedro Coelho", email = "luis@luispedro.org"}]
 classifiers = [
     "Environment :: Console",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -14,8 +15,12 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = []
 
-[project.entry-points."console_scripts"]
+[project.scripts]
 umake = "umake.main:main"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 version = {attr = "umake.umake_version.__version__"}
