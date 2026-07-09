@@ -21,7 +21,10 @@ def parse_args(args):
                         nargs=2,
                         help='Check if conversion is supported',
                         metavar=('ext1', 'ext2'))
-    return parser.parse_args(args)
+    args = parser.parse_args(args)
+    if args.target is None and args.supports is None:
+        parser.error('a target file is required (unless --supports is used)')
+    return args
 
 
 def main(args=None):
