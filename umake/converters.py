@@ -1,6 +1,15 @@
+import pathlib
 import subprocess
 
 registry = {}
+
+def _rename_output(target, src):
+    '''libreoffice and xelatex name their output after the source stem, so
+    move it onto the target if the names differ'''
+    target = pathlib.Path(target).absolute()
+    produced = target.with_name(pathlib.Path(src).stem + target.suffix)
+    if produced != target:
+        produced.replace(target)
 
 def register_converter(cls):
     cls.register(registry)
@@ -61,7 +70,15 @@ class XelateXConverter(SubprocessConverter):
     _conversions = [('.pdf', '.tex')]
 
     def build_command(self, target, src):
-        return ['xelatex', src]
+        return ['xelatex',
+                '-output-directory', str(pathlib.Path(target).absolute().parent),
+                src]
+
+    def __call__(self, target, src):
+        # run twice so cross-references and tables of contents are up to date
+        super().__call__(target, src)
+        super().__call__(target, src)
+        _rename_output(target, src)
 
 
 @register_converter
@@ -76,15 +93,20 @@ class LibreOfficeConverter(SubprocessConverter):
                    ]
     def build_command(self, target, src):
         if target.endswith('.pdf'):
-            target = 'pdf'
+            to = 'pdf'
         elif target.endswith('.csv'):
-            target = 'csv'
+            to = 'csv'
         else:
             raise NotImplementedError(f'LibreOfficeConverter: Conversion to {target} not implemented')
         return ['libreoffice',
                 '--headless',
-                '--convert-to', target,
+                '--convert-to', to,
+                '--outdir', str(pathlib.Path(target).absolute().parent),
                 src]
+
+    def __call__(self, target, src):
+        super().__call__(target, src)
+        _rename_output(target, src)
 
 
 @register_converter
