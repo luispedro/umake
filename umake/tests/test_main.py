@@ -41,9 +41,9 @@ def test_candidate_selection_rejects_bad_input(tmp_path, monkeypatch):
     assert len(converted) == 1
 
 
-def _install_fake_pdf_converter(tmp_path, monkeypatch, command):
+def _install_fake_pdf_converter(tmp_path, monkeypatch, command, src_name='doc.md'):
     from umake import converters as cs
-    (tmp_path / 'doc.md').write_text('')
+    (tmp_path / src_name).write_text('')
     class FakeTool(cs.SubprocessConverter):
         def build_command(self, target, src):
             return command
@@ -66,6 +66,16 @@ def test_converter_error(tmp_path, monkeypatch, capsys):
     _install_fake_pdf_converter(tmp_path, monkeypatch, ['false'])
     assert main(['doc.pdf']) == 1
     assert 'exited with status 1' in capsys.readouterr().err
+
+
+def test_extension_matching_case_insensitive(tmp_path, monkeypatch):
+    _install_fake_pdf_converter(tmp_path, monkeypatch, ['true'], src_name='doc.MD')
+    assert main(['doc.pdf']) == 0
+    assert main(['doc.PDF']) == 0
+
+
+def test_supports_case_insensitive(capsys):
+    assert main(['--supports', 'DOCX', 'PDF']) == 0
 
 
 def test_list(capsys):

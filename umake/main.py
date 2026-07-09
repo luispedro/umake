@@ -37,7 +37,7 @@ def main(args=None):
             print(f'  {src[1:]} -> {target[1:]}')
         return 0
     if args.supports:
-        ext1, ext2 = args.supports
+        ext1, ext2 = [e.lower() for e in args.supports]
         if (f'.{ext2}', f'.{ext1}') in cs.registry:
             print(f'Conversion from {ext1} to {ext2} is supported')
             return 0
@@ -50,11 +50,11 @@ def main(args=None):
         return 1
     if len(target.suffixes) > 1:
         warnings.warn(f'File {target} has multiple suffixes {target.suffixes}, only the last one will be considered')
-    ext1 = target.suffix
+    ext1 = target.suffix.lower()
     candidates = []
     for c in target.absolute().parent.iterdir():
-        if c.stem == target.stem and c.suffix != target.suffix:
-            if (target.suffix, c.suffix) in cs.registry:
+        if c.stem == target.stem and c.suffix.lower() != ext1:
+            if (ext1, c.suffix.lower()) in cs.registry:
                 candidates.append(c)
     if len(candidates) == 0:
         sys.stderr.write(f'No candidates found for {target}\n')
@@ -86,7 +86,7 @@ def main(args=None):
         else:
             print('Overwriting')
     try:
-        cs.registry[(target.suffix, c.suffix)](target, c)
+        cs.registry[(ext1, c.suffix.lower())](target, c)
     except FileNotFoundError as e:
         sys.stderr.write(f'{e.filename}: not found — is it installed?\n')
         return 1
