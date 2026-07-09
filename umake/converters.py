@@ -22,7 +22,7 @@ class SubprocessConverter(Converter):
         raise NotImplementedError
 
     def __call__(self, target, src):
-        command = self.build_command(target, src)
+        command = self.build_command(str(target), str(src))
         if not self.quiet:
             print(' '.join(map(str,command)))
         subprocess.check_call(command)
