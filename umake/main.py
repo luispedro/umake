@@ -1,6 +1,8 @@
 import sys
 import pathlib
 from umake import converters as cs
+import warnings
+
 
 def parse_args(args):
     '''Parse command line arguments
@@ -34,7 +36,7 @@ def main(args=None):
             return 1
     target = args.target
     if len(target.suffixes) != 1:
-        raise IOError(f'Cannot parse {target}')
+        warnings.warn(f'File {target} has multiple suffixes {target.suffixes}, only the last one will be considered')
     ext1 = target.suffix
     candidates = []
     for c in target.absolute().parent.iterdir():
